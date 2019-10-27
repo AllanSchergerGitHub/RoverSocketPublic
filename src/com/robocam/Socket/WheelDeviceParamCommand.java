@@ -17,7 +17,7 @@ public class WheelDeviceParamCommand extends Command {
     
     private String mLastBuiltCommand;
 
-    public WheelDeviceParamCommand(int wheelIndex ) {
+    public WheelDeviceParamCommand(int wheelIndex) {
         super(String.format("%s_%d", COMMAND_NAME, wheelIndex));
         mWheelIndex = wheelIndex;
     }
