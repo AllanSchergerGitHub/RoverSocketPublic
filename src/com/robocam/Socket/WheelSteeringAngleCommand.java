@@ -2,14 +2,17 @@ package com.robocam.Socket;
 
 public class WheelSteeringAngleCommand extends Command {
     private static final String COMMAND_NAME = "wsa";
+    
     private static final String PARAM_INDICES = "i";
     private static final String PARAM_MODE = "m";
+    private static final String PARAM_ANGLE = "a";
     
     public static final String MODE_INCREMENTAL = "i";
     public static final String MODE_ABSOLUTE = "a";
 
     private String[] mWheelIndices = new String[]{};
     private String mMode = MODE_ABSOLUTE;
+    private double mAngle = 0;
     
     public WheelSteeringAngleCommand() {
         super(COMMAND_NAME);
@@ -38,17 +41,27 @@ public class WheelSteeringAngleCommand extends Command {
     public String getMode() {
         return mMode;
     }
+    
+    public void setAngle(double angle) {
+        mAngle = angle;
+    }
+
+    public Double getAngle() {
+        return mAngle;
+    }
 
     @Override
     public String buildCommand() {
         if (mWheelIndices.length == 0) return "";
         return String.format(
-                "%s%s%s=%s,%s=%s",
+                "%s%s%s=%s,%s=%s,%s=%.2f",
                 mName, Command.COMMAND_ARG_SEPARATOR,
                 PARAM_INDICES,
                 String.join("+", mWheelIndices),
                 PARAM_MODE,
-                mMode);
+                mMode,
+                PARAM_ANGLE,
+                mAngle);
     }
 
     @Override
@@ -60,6 +73,9 @@ public class WheelSteeringAngleCommand extends Command {
                         PARAM_INDICES.length()+1).split("\\+");
             } else if (argument.startsWith(PARAM_MODE)) {
                 mMode = argument.substring(PARAM_MODE.length()+1);
+            } else if (argument.startsWith(PARAM_ANGLE)) {
+                mAngle = Double.parseDouble(
+                        argument.substring(PARAM_MODE.length()+1));
             }
         }
     }
