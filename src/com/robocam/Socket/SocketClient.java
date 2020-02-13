@@ -37,7 +37,10 @@ public class SocketClient implements Runnable {
             if (mSocket == null) {
                 try {
                     mSocket = new Socket(mHost, mPort);
-                } catch (IOException ex) {}
+                } catch (IOException ex) {
+                    Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
             }
             if (mSocket != null && !spawned) {
                 System.out.println("Spawning new socket from UI");
