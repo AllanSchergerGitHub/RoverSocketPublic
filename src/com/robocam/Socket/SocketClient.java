@@ -38,7 +38,7 @@ public class SocketClient implements Runnable {
                 try {
                     mSocket = new Socket(mHost, mPort);
                 } catch (IOException ex) {
-                    Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
+                    // Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
             }
