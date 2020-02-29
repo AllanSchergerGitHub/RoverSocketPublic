@@ -46,6 +46,10 @@ public class FloatSubCommand extends Command {
         return mValue;
     }
     
+    public boolean hasValue() {
+        return mValue != null;
+    }
+    
     @Override
     public String buildCommand() {
         return String.format("%s%s%c,%.5f%s",
