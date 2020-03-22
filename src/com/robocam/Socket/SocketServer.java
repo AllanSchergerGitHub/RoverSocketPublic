@@ -29,7 +29,7 @@ public class SocketServer implements Runnable {
         //At present only two thead is needed to
         //execute read from and write to UI socket
         //Additional 2 threads is for safe operation
-        mExecutorService = Executors.newFixedThreadPool(2);
+        mExecutorService = Executors.newFixedThreadPool(5);
         mComPipe = comPipe;
     }
 
