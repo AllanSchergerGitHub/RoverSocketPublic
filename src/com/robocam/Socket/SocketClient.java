@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -37,7 +39,13 @@ public class SocketClient implements Runnable {
             if (mSocket == null) {
                 try {
                     mSocket = new Socket(mHost, mPort);
-                } catch (IOException ex) {
+                    
+                } 
+                catch (java.net.ConnectException ce) {
+                    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                    System.err.println("Tried to connect but refused:  "+ce+" "+timestamp);
+                } 
+                catch (IOException ex) {
                     // Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
