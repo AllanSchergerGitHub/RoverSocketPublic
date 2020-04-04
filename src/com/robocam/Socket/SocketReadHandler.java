@@ -65,11 +65,11 @@ public class SocketReadHandler implements Runnable {
             if (line != null) {
                 //System.out.println("SocketReadHandler: " + line);
                 if (line.equals(ComPipe.CLOSE_COMMAND)) {
-                    //System.out.println("Got closing signal");
+                    // System.out.println("Got closing signal");
                     try {
                         mSocket.close();
                     } catch (IOException ex) {
-                        //Logger.getLogger(SocketReadHandler.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(SocketReadHandler.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     break;
                 }

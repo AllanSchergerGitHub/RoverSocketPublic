@@ -12,6 +12,7 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,6 +29,7 @@ public class SocketServer implements Runnable {
 
     public SocketServer(int port, ComPipe comPipe) throws IOException {
         mServerSocket = new ServerSocket(port);
+        mServerSocket.setSoTimeout((int) TimeUnit.SECONDS.toMillis(10));
         System.out.println(String.format("%d", port));
         //At present only two thead is needed to
         //execute read from and write to UI socket
@@ -47,21 +49,22 @@ public class SocketServer implements Runnable {
             try {
                 socket = mServerSocket.accept();
             } catch (IOException e) {
-                throw new RuntimeException(
-                    "Client cannot be connected - Error", e);
-            }
-            try {
-                socket.setSoTimeout(0);//no timeout, hearbeat will handle it
-            } catch (SocketException ex) {
-                Logger.getLogger(SocketServer.class.getName()).log(Level.SEVERE, null, ex);
+                /* throw new RuntimeException(
+                    "Client cannot be connected - Error", e); */
             }
             if (socket != null) {
-                mConnectedSockets.add(socket);
-                System.out.println("New connection!" + socket.getRemoteSocketAddress().toString());
-                mExecutorService.execute(new SocketReadHandler(socket, mComPipe));
-                mExecutorService.execute(new SocketWriteHandler(socket, mComPipe));
+                try {
+                    socket.setSoTimeout(0);//no timeout, hearbeat will handle it
+                } catch (SocketException ex) {
+                    Logger.getLogger(SocketServer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                if (socket != null) {
+                    mConnectedSockets.add(socket);
+                    System.out.println("New connection!" + socket.getRemoteSocketAddress().toString());
+                    mExecutorService.execute(new SocketReadHandler(socket, mComPipe));
+                    mExecutorService.execute(new SocketWriteHandler(socket, mComPipe));
+                }
             }
-            
             // Remove closed sockets
             int i = 0;
             while (i < mConnectedSockets.size()) {
