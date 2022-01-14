@@ -50,6 +50,13 @@ public class FloatSubCommand extends Command {
         return mValue != null;
     }
     
+    public FloatSubCommand copy() {
+        FloatSubCommand command = new FloatSubCommand();
+        command.mSubCommand = mSubCommand;
+        command.mValue = mValue;
+        return command;
+    }
+    
     @Override
     public String buildCommand() {
         return String.format("%s%s%c,%.5f%s",
