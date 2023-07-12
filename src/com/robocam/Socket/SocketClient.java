@@ -5,19 +5,17 @@
  */
 package com.robocam.Socket;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.Socket;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-
+/**
+ * The UI is the client; the Rover computer is the server.
+ * This code is only used on the UI and not on the Rover computer.
+ * @author allan
+ */
 public class SocketClient implements Runnable {
     private String mHost;
     private int mPort;
@@ -43,7 +41,7 @@ public class SocketClient implements Runnable {
                 } 
                 catch (java.net.ConnectException ce) {
                     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-                    System.err.println("Tried to connect but refused:  "+ce+" "+timestamp);
+                    System.err.println("UI tried to connect to Rover at " + mHost + " " + mPort + "but refused:  "+ce+" "+timestamp);
                 } 
                 catch (IOException ex) {
                     // Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
@@ -60,11 +58,11 @@ public class SocketClient implements Runnable {
             if (mSocket != null && mSocket.isClosed()){
                 mSocket = null;
                 mComPipe.stop();
-                System.out.println("Cloasing new socket from UI");
+                System.out.println("Closing new socket from UI");
                 spawned = false;
             }
             try {
-                Thread.sleep(100);
+                Thread.sleep(250);
             } catch (InterruptedException ex) {
                 //Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
                 break;

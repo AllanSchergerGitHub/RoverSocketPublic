@@ -5,6 +5,8 @@ public class WheelDeviceParamCommand extends Command {
 
     private static final String WHEEL_INDEX = "n";
     private static final String BLDC_MOTOR_POS = "bmp";
+    private static final String STEERING_ANGLE = "bmangle";
+    private static final String BLDC_MOTOR_TEMPERATURE = "bmtemperature";
     private static final String BLDC_MOTOR_1_POS = "bm1p";
     private static final String BLDC_MOTOR_2_POS = "bm2p";
     private static final String BLDC_MOTOR_1_DUTY_CYCLE = "bm1d";
@@ -14,6 +16,8 @@ public class WheelDeviceParamCommand extends Command {
     private double mBLDCMotorPosDepreciated;
     private double[] mBLDCMotorPosList = {0, 0};
     private final double[] mBLDCMotorDutyCycleList = {0, 0};
+    private final double[] mActualSteeringAngleList = {0, 0};
+    private final double[] mActualTemperatureList = {0, 0};
     
     private String mLastBuiltCommand;
 
@@ -25,15 +29,15 @@ public class WheelDeviceParamCommand extends Command {
     public int getWheelIndex() {
         return mWheelIndex;
     }
+//    
+//    public double getBLDCMotorPosDepreciated() {
+//        System.err.println("THIS SHOULD BE DEPRECIATED - Aug 18 2019");
+//        return mBLDCMotorPosDepreciated;
+//    }
     
-    public double getBLDCMotorPosDepreciated() {
-        System.err.println("THIS SHOULD BE DEPRECIATED - Aug 18 2019");
-        return mBLDCMotorPosDepreciated;
-    }
-    
-    public void setBLDCMotorPosDepreciated(double value) {
-        mBLDCMotorPosDepreciated = value;
-    }
+//    public void setBLDCMotorPosDepreciated(double value) {
+//        mBLDCMotorPosDepreciated = value;
+//    }
     
     public void setBLDCMotorPos(int index,double value) {
         mBLDCMotorPosList[index] = value;
@@ -50,6 +54,22 @@ public class WheelDeviceParamCommand extends Command {
     public void setBLDCMotorDutyCycle(int index, double value) {
         mBLDCMotorDutyCycleList[index] = value;
     }
+
+    public double getActualSteeringAngle(int index) {
+        return mActualSteeringAngleList[index];
+    }
+
+    public void setActualSteeringAngle(int index, double value) {
+        mActualSteeringAngleList[index] = value;
+    }
+    
+    public double getBLDCMotorActualTemperature(int index) {
+        return mActualTemperatureList[index];
+    }
+
+    public void setBLDCMotorActualTemperature(int index, double value) {
+        mActualTemperatureList[index] = value;
+    }
     
     public String buildCommandIfChanged() {
         String command = buildCommand();
@@ -60,6 +80,10 @@ public class WheelDeviceParamCommand extends Command {
         return command;
     }
 
+    /**
+     * buildCommand has a role in sending data from Rover to UI.
+     * @return 
+     */
     @Override
     public String buildCommand() {
         /*For testing
@@ -68,9 +92,14 @@ public class WheelDeviceParamCommand extends Command {
         mBLDCMotorPosList[0] += Math.random();
         mBLDCMotorPosList[1] += Math.random();
         */
-        return String.format("%s%s%s=%.2f,%s=%.2f,%s=%.2f,%s=%.2f,%s=%.2f%s",
+//        return String.format("%s%s%s=%.2f,%s=%.2f,%s=%.2f,%s=%.2f,%s=%.2f%s", //old version
+          //return String.format("%s%s%s=%.2f,%s=%.2f,%s=%.2f,%s=%.2f%s", //new version
+          return String.format("%s%s%s=%.2f,%s=%.2f,%s=%.2f,%s=%.2f,%s=%.2f,%s=%.2f%s",
                 mName, Command.COMMAND_ARG_SEPARATOR,
-                BLDC_MOTOR_POS, mBLDCMotorPosDepreciated,
+                //BLDC_MOTOR_POS, mBLDCMotorPosDepreciated,
+                STEERING_ANGLE,  mActualSteeringAngleList[0],
+                BLDC_MOTOR_TEMPERATURE, mActualTemperatureList[0],
+                
                 BLDC_MOTOR_1_DUTY_CYCLE, mBLDCMotorDutyCycleList[0],
                 BLDC_MOTOR_2_DUTY_CYCLE, mBLDCMotorDutyCycleList[1],
                 BLDC_MOTOR_1_POS, mBLDCMotorPosList[0],
@@ -78,14 +107,19 @@ public class WheelDeviceParamCommand extends Command {
                 PRIORITY_COMMAND_FLAG);
     }
 
+    /**
+     * Which direction is this going? to or from Rover?
+     * @param command 
+     */
     @Override
     public void parseCommand(String command) {
         String[] arguments = getArguments(command);
         for (int i = 0; i < arguments.length; i++) {
-            if (arguments[i].startsWith(BLDC_MOTOR_POS)) {
-                mBLDCMotorPosDepreciated = Double.parseDouble(
-                        arguments[i].substring(BLDC_MOTOR_POS.length()+1));
-            } else if (arguments[i].startsWith(BLDC_MOTOR_1_DUTY_CYCLE)) {
+//            if (arguments[i].startsWith(BLDC_MOTOR_POS)) {
+//                mBLDCMotorPosDepreciated = Double.parseDouble(
+//                        arguments[i].substring(BLDC_MOTOR_POS.length()+1));
+//            } else 
+            if (arguments[i].startsWith(BLDC_MOTOR_1_DUTY_CYCLE)) {
                 mBLDCMotorDutyCycleList[0] = Double.parseDouble(
                         arguments[i].substring(BLDC_MOTOR_1_DUTY_CYCLE.length()+1));
             } else if (arguments[i].startsWith(BLDC_MOTOR_2_DUTY_CYCLE)) {

@@ -9,20 +9,13 @@ public class WheelSteeringAngleCommand extends Command {
     
     public static final String MODE_INCREMENTAL = "i";
     public static final String MODE_ABSOLUTE = "a";
-
-    private String[] mWheelIndices = new String[]{};
     private String mMode = MODE_ABSOLUTE;
+    private String[] mWheelIndices = new String[]{};
+
     private double mAngle = 0;
     
     public WheelSteeringAngleCommand() {
         super(COMMAND_NAME);
-    }
-    
-    public void setWheelIndices(int ...indices) {
-        mWheelIndices = new String[indices.length];
-        for (int i = 0; i < indices.length; i++) {
-            mWheelIndices[i] = String.valueOf(indices[i]);
-        }
     }
     
     public int[] getWheelIndices() {
@@ -32,24 +25,15 @@ public class WheelSteeringAngleCommand extends Command {
         }
         return indices;
     }
-    
-        
-    public void setMode(String mode) {
-        mMode = mode;
-    }
 
     public String getMode() {
         return mMode;
-    }
-    
-    public void setAngle(double angle) {
-        mAngle = angle;
     }
 
     public Double getAngle() {
         return mAngle;
     }
-
+    
     @Override
     public String buildCommand() {
         if (mWheelIndices.length == 0) return "";
